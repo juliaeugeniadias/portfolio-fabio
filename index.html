@@ -342,7 +342,9 @@
     <div class="container" id="header-container">
         <header>
             <div class="profile-pic">
-                <div class="profile-pic-placeholder">FA</div>
+                <!-- A foto será inserida aqui após o upload -->
+                <img id="profile-image" src="perfil.jpg.jpeg" alt="Fábio Alves de Lima Pereira Dias" style="width: 100%; height: 100%; object-fit: cover; display: none;" onerror="this.style.display='none'; document.getElementById('profile-placeholder').style.display='flex';">
+                <div id="profile-placeholder" class="profile-pic-placeholder">FA</div>
             </div>
             <div class="personal-info">
                 <h1>Fábio Alves de Lima Pereira Dias</h1>
@@ -398,7 +400,7 @@
             <div class="modal-body">
                 <p>Fábio de Lima é especialista em Desenvolvimento Humano e Consultor em Cultura Organizacional Humanizada. Com ampla trajetória em liderança de equipes, facilitação de processos de autoconhecimento, educação emocional e treinamentos corporativos, atua como coach, mentor e palestrante, inspirando pessoas e organizações a se reconectarem com seus propósitos e evoluírem com consciência.</p>
                 
-                <p>Criador de projetos educacionais sobre gestão de pessoas, é reconhecido por sua comunicação sensível, visão estratégica e capacidade de transformação humana por meio do afeto, da escuta e da ação.</p>
+                <p>Criador de projetos educacionais de gestão de pessoas, é reconhecido por sua comunicação sensível, visão estratégica e capacidade de transformação humana por meio do afeto, da escuta e da ação.</p>
             </div>
         </div>
     </div>
@@ -635,9 +637,23 @@
             });
         });
 
-        // Adicionar efeito de scroll
-        window.addEventListener('scroll', checkScroll);
+        // Verificar se a foto existe e mostrar
         window.addEventListener('load', function() {
+            const profileImg = document.getElementById('profile-image');
+            const placeholder = document.getElementById('profile-placeholder');
+            
+            // Tentar carregar a imagem
+            const testImg = new Image();
+            testImg.onload = function() {
+                profileImg.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            testImg.onerror = function() {
+                profileImg.style.display = 'none';
+                placeholder.style.display = 'flex';
+            };
+            testImg.src = 'perfil.jpg.jpeg';
+            
             checkScroll();
             // Garantir que todos os event listeners estejam funcionando
             const containers = document.querySelectorAll('.combobox-container');
@@ -658,5 +674,5 @@
         }, 100);
     </script>
 </body>
-
 </html>
+
