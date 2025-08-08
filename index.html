@@ -25,14 +25,24 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            opacity: 0;
-            transform: translateY(20px);
+            opacity: 1; /* Mudança aqui - iniciar visível */
+            transform: translateY(0); /* Mudança aqui - iniciar na posição normal */
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
-        .container.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .container.animate-in {
+            animation: slideInUp 0.8s ease-out forwards;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Cabeçalho (Header) */
@@ -101,14 +111,13 @@
         /* Combobox Interativa */
         .combobox-container {
             margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(20px);
+            opacity: 1; /* Mudança aqui - iniciar visível */
+            transform: translateY(0); /* Mudança aqui - iniciar na posição normal */
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
-        .combobox-container.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .combobox-container.animate-in {
+            animation: slideInUp 0.8s ease-out forwards;
         }
 
         .combobox {
@@ -280,6 +289,7 @@
                 gap: 20px;
             }
         }
+
         @media screen and (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -335,6 +345,11 @@
             .modal-content {
                 padding: 20px;
             }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
         }
     </style>
 </head>
@@ -360,31 +375,31 @@
     <div class="container">
         <div class="cards-grid">
             <div class="combobox-container">
-                <div class="combobox" id="bio-combobox">
+                <div class="combobox" onclick="openModal('bio-modal')">
                     <h2>Mini Bio Profissional</h2>
                 </div>
             </div>
 
             <div class="combobox-container">
-                <div class="combobox" id="skills-combobox">
+                <div class="combobox" onclick="openModal('skills-modal')">
                     <h2>Soft Skills e Hard Skills</h2>
                 </div>
             </div>
 
             <div class="combobox-container">
-                <div class="combobox" id="experience-combobox">
+                <div class="combobox" onclick="openModal('experience-modal')">
                     <h2>Experiência Profissional</h2>
                 </div>
             </div>
 
             <div class="combobox-container">
-                <div class="combobox" id="education-combobox">
+                <div class="combobox" onclick="openModal('education-modal')">
                     <h2>Cursos e Formação</h2>
                 </div>
             </div>
 
             <div class="combobox-container">
-                <div class="combobox" id="social-combobox">
+                <div class="combobox" onclick="openModal('social-modal')">
                     <h2>Redes Sociais</h2>
                 </div>
             </div>
@@ -395,7 +410,7 @@
     <!-- Modal para Mini Bio -->
     <div id="bio-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" id="close-bio">&times;</span>
+            <span class="close-btn" onclick="closeModal('bio-modal')">&times;</span>
             <h2 class="modal-title">Mini Bio Profissional</h2>
             <div class="modal-body">
                 <p>Fábio de Lima é especialista em Desenvolvimento Humano e Consultor em Cultura Organizacional Humanizada. Com ampla trajetória em liderança de equipes, facilitação de processos de autoconhecimento, educação emocional e treinamentos corporativos, atua como coach, mentor e palestrante, inspirando pessoas e organizações a se reconectarem com seus propósitos e evoluírem com consciência.</p>
@@ -408,7 +423,7 @@
     <!-- Modal para Redes Sociais -->
     <div id="social-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" id="close-social">&times;</span>
+            <span class="close-btn" onclick="closeModal('social-modal')">&times;</span>
             <h2 class="modal-title">Redes Sociais</h2>
             <div class="modal-body">
                 <h3>Conecte-se comigo</h3>
@@ -433,7 +448,7 @@
     <!-- Modal para Skills -->
     <div id="skills-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" id="close-skills">&times;</span>
+            <span class="close-btn" onclick="closeModal('skills-modal')">&times;</span>
             <h2 class="modal-title">Hard Skills e Soft Skills</h2>
             <div class="modal-body">
                 <h3>Hard Skills (Habilidades Técnicas)</h3>
@@ -469,7 +484,7 @@
     <!-- Modal para Experiência Profissional -->
     <div id="experience-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" id="close-experience">&times;</span>
+            <span class="close-btn" onclick="closeModal('experience-modal')">&times;</span>
             <h2 class="modal-title">Experiência Profissional</h2>
             <div class="modal-body">
                 <h3>Qualificações Principais</h3>
@@ -512,7 +527,7 @@
     <!-- Modal para Educação -->
     <div id="education-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" id="close-education">&times;</span>
+            <span class="close-btn" onclick="closeModal('education-modal')">&times;</span>
             <h2 class="modal-title">Cursos e Formação</h2>
             <div class="modal-body">
                 <h3>Formação Acadêmica</h3>
@@ -545,93 +560,39 @@
     </div>
 
     <script>
-        // Função para mostrar elementos conforme scroll
-        function checkScroll() {
-            const elements = document.querySelectorAll('.container, .combobox-container');
-            
-            elements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const windowHeight = window.innerHeight;
-                
-                if (elementTop < windowHeight - 100) {
-                    element.classList.add('visible');
-                }
-            });
-        }
-
-        // Inicializar visibilidade para o cabeçalho e cards
-        document.getElementById('header-container').classList.add('visible');
-        
-        // Mostrar todos os cards imediatamente
-        document.addEventListener('DOMContentLoaded', function() {
-            const containers = document.querySelectorAll('.combobox-container');
-            containers.forEach(container => {
-                container.classList.add('visible');
-            });
-        });
-
         // Função para abrir modal
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            if (modal) {
+                modal.style.display = 'block';
+                setTimeout(() => {
+                    modal.classList.add('active');
+                }, 10);
+                document.body.style.overflow = 'hidden';
+            }
         }
 
         // Função para fechar modal
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+                document.body.style.overflow = 'auto';
+            }
         }
 
-        // Event Listeners para os comboboxes
-        document.getElementById('bio-combobox').addEventListener('click', () => {
-            openModal('bio-modal');
-        });
-
-        document.getElementById('skills-combobox').addEventListener('click', () => {
-            openModal('skills-modal');
-        });
-
-        document.getElementById('experience-combobox').addEventListener('click', () => {
-            openModal('experience-modal');
-        });
-
-        document.getElementById('education-combobox').addEventListener('click', () => {
-            openModal('education-modal');
-        });
-
-        document.getElementById('social-combobox').addEventListener('click', () => {
-            openModal('social-modal');
-        });
-
-        // Event Listeners para os botões de fechar
-        document.getElementById('close-bio').addEventListener('click', () => {
-            closeModal('bio-modal');
-        });
-
-        document.getElementById('close-skills').addEventListener('click', () => {
-            closeModal('skills-modal');
-        });
-
-        document.getElementById('close-experience').addEventListener('click', () => {
-            closeModal('experience-modal');
-        });
-
-        document.getElementById('close-education').addEventListener('click', () => {
-            closeModal('education-modal');
-        });
-
-        document.getElementById('close-social').addEventListener('click', () => {
-            closeModal('social-modal');
-        });
-
         // Fechar modal ao clicar fora do conteúdo
-        window.addEventListener('click', (event) => {
+        window.addEventListener('click', function(event) {
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
                 if (event.target === modal) {
                     modal.classList.remove('active');
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                    }, 300);
                     document.body.style.overflow = 'auto';
                 }
             });
@@ -642,37 +603,39 @@
             const profileImg = document.getElementById('profile-image');
             const placeholder = document.getElementById('profile-placeholder');
             
-            // Tentar carregar a imagem
-            const testImg = new Image();
-            testImg.onload = function() {
-                profileImg.style.display = 'block';
-                placeholder.style.display = 'none';
-            };
-            testImg.onerror = function() {
-                profileImg.style.display = 'none';
-                placeholder.style.display = 'flex';
-            };
-            testImg.src = 'perfil.jpg.jpeg';
+            if (profileImg && placeholder) {
+                // Tentar carregar a imagem
+                const testImg = new Image();
+                testImg.onload = function() {
+                    profileImg.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+                testImg.onerror = function() {
+                    profileImg.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                };
+                testImg.src = 'perfil.jpg.jpeg';
+            }
+        });
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página carregada com sucesso!');
             
-            checkScroll();
-            // Garantir que todos os event listeners estejam funcionando
-            const containers = document.querySelectorAll('.combobox-container');
-            containers.forEach(container => {
-                container.classList.add('visible');
+            // Garantir que todos os elementos estejam visíveis
+            const headerContainer = document.getElementById('header-container');
+            const comboboxContainers = document.querySelectorAll('.combobox-container');
+            
+            if (headerContainer) {
+                headerContainer.classList.add('animate-in');
+            }
+            
+            comboboxContainers.forEach((container, index) => {
+                setTimeout(() => {
+                    container.classList.add('animate-in');
+                }, index * 100);
             });
         });
-        
-        // Verificar scroll inicial e inicializar cards
-        checkScroll();
-        
-        // Garantir que os cards sejam visíveis imediatamente
-        setTimeout(function() {
-            const containers = document.querySelectorAll('.combobox-container');
-            containers.forEach(container => {
-                container.classList.add('visible');
-            });
-        }, 100);
     </script>
 </body>
 </html>
-
